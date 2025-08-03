@@ -3,8 +3,6 @@ package com.example.weesh.core.shared;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 // json 형식으로 메시지를 반환하기위해
