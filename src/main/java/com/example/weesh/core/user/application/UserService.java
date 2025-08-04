@@ -35,9 +35,10 @@ public class UserService implements RegisterUserUseCase {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new DuplicateUserException("username", dto.getUsername());
         }
-        if (userRepository.existsByStudentNumber(dto.getStudentNumber())) {
-            throw new DuplicateUserException("studentNumber", dto.getStudentNumber());
+        if (userRepository.existsByStudentNumber(user.getStudentNumber())) {
+            throw new DuplicateUserException("studentNumber", String.valueOf(user.getStudentNumber()));
         }
+
         return toResponseDto(userRepository.save(user));
     }
 

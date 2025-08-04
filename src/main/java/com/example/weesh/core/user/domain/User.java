@@ -28,7 +28,7 @@ public class User implements Serializable {
     private String fullName;
 
     @Column(name = "student_number", nullable = false, unique = true)
-    private String studentNumber;
+    private int studentNumber;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
@@ -48,7 +48,7 @@ public class User implements Serializable {
 
     // 생성자
     @Builder
-    public User(String username, String password, String fullName, String studentNumber,
+    public User(String username, String password, String fullName, int studentNumber,
                 LocalDateTime createdDate, LocalDateTime lastModifiedDate, Set<UserRole> roles) {
         this.username = username;
         this.password = password;

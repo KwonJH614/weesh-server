@@ -8,5 +8,5 @@ public interface UserRepository {
     User save(User user);
     Optional<User> findByUsername(String username);
     boolean existsByUsername(String username);
-    boolean existsByStudentNumber(String studentNumber);
+    boolean existsByStudentNumber(int studentNumber);
 }

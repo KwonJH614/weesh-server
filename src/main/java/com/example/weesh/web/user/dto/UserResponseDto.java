@@ -11,7 +11,7 @@ public class UserResponseDto {
     private final Long id;
     private final String username;
     private final String fullName;
-    private final String studentNumber;
+    private final int studentNumber;
     private final Set<UserRole> roles;
 
     public UserResponseDto(User user) {
