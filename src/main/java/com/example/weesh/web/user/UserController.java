@@ -1,0 +1,32 @@
+package com.example.weesh.web.user;
+
+import com.example.weesh.core.shared.ApiResponse;
+import com.example.weesh.core.user.application.UserService;
+import com.example.weesh.core.user.application.useCase.RegisterUserUseCase;
+import com.example.weesh.web.user.dto.UserRequestDto;
+import com.example.weesh.web.user.dto.UserResponseDto;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    private final RegisterUserUseCase registerUserUseCase;
+
+    public UserController(UserService userService) {
+        this.registerUserUseCase = userService; // DIP 준수
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<Object>> registerUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto response = registerUserUseCase.register(userRequestDto);
+        return ResponseEntity.ok(
+                ApiResponse
+                        .success("회원가입 성공",response)
+        );
+    }
+}
