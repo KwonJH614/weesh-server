@@ -1,8 +1,9 @@
 package com.example.weesh.core.foundation.exception;
 
+import com.example.weesh.core.auth.exception.AuthException;
 import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.core.shared.ApiResponse;
-import com.example.weesh.core.user.domain.exception.DuplicateUserException;
+import com.example.weesh.core.user.exception.DuplicateUserException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,5 +46,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleGenericException(Exception ex) {
         LoggingUtil.error("Internal server error: " + ex.getMessage(), ex);
         return new ResponseEntity<>(ApiResponse.error("Internal server error... :( " + ex), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiResponse<?>> handleBlacklistException(IllegalStateException ex) {
+        LoggingUtil.error("IllegalStateException error: " + ex.getMessage(), ex);
+        return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ApiResponse<?>> handleAuthException(AuthException ex) {
+        LoggingUtil.error("Auth error: " + ex.getMessage(), ex);
+        return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.valueOf(ex.getStatusCode()));
     }
 }

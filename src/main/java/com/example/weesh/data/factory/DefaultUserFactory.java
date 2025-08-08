@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Component
@@ -25,6 +26,21 @@ public class DefaultUserFactory implements UserFactory {
                 .fullName(requestDto.getFullName())
                 .studentNumber(studentNumber)
                 .roles(Collections.singleton(UserRole.USER))
+                .createdDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
+                .build();
+    }
+
+    public User createAdminFromDto(UserRequestDto requestDto, String encryptedPassword) {
+        Objects.requireNonNull(requestDto, "Request DTO cannot be null");
+        validateRequestDto(requestDto);
+        int studentNumber = parseStudentNumber(requestDto.getStudentNumber());
+        return User.builder()
+                .username(requestDto.getUsername())
+                .password(encryptedPassword)
+                .fullName(requestDto.getFullName())
+                .studentNumber(studentNumber)
+                .roles(new HashSet<>(Collections.singletonList(UserRole.ADMIN))) // admin 역할 설정
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();

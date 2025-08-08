@@ -3,7 +3,7 @@ package com.example.weesh.core.user.application;
 import com.example.weesh.core.user.application.factory.UserFactory;
 import com.example.weesh.core.user.application.useCase.RegisterUserUseCase;
 import com.example.weesh.core.user.domain.User;
-import com.example.weesh.core.user.domain.exception.DuplicateUserException;
+import com.example.weesh.core.user.exception.DuplicateUserException;
 import com.example.weesh.web.user.dto.UserRequestDto;
 import com.example.weesh.web.user.dto.UserResponseDto;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,17 +31,27 @@ public class UserService implements RegisterUserUseCase {
     public UserResponseDto register(UserRequestDto dto) {
         String encryptedPassword = passwordEncoder.encode(dto.getPassword());
         User user = userFactory.createUserFromDto(dto, encryptedPassword);
+        validateUser(user);
+        return toResponseDto(userRepository.save(user));
+    }
 
-        if (userRepository.existsByUsername(dto.getUsername())) {
-            throw new DuplicateUserException("username", dto.getUsername());
+    @Transactional
+    @Override
+    public UserResponseDto registerAdmin(UserRequestDto dto) {
+        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
+        User user = userFactory.createAdminFromDto(dto, encryptedPassword);
+        validateUser(user);
+        return toResponseDto(userRepository.save(user));
+    }
+
+    private void validateUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new DuplicateUserException("username", user.getUsername());
         }
         if (userRepository.existsByStudentNumber(user.getStudentNumber())) {
             throw new DuplicateUserException("studentNumber", String.valueOf(user.getStudentNumber()));
         }
-
-        return toResponseDto(userRepository.save(user));
     }
-
     // 별도 메서드로 UserResponseDto 생성 (SRP 준수)
     public UserResponseDto toResponseDto(User user) {
         return new UserResponseDto(user);

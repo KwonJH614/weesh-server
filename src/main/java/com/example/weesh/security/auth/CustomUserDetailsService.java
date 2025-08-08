@@ -4,6 +4,7 @@ import com.example.weesh.core.user.application.UserRepository;
 import com.example.weesh.core.foundation.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,12 +21,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Loading user details for username: {}", username);
         return userRepository.findByUsername(username)
-                .map(user -> org.springframework.security.core.userdetails.User
-                        .withUsername(user.getUsername())
-                        .password(user.getPassword())
-                        .roles(user.getRoles().stream().map(UserRole::getAuthority).toArray(String[]::new))
-                        .build())
+                .map(user -> new org.springframework.security.core.userdetails.User(
+                        user.getUsername(),
+                        user.getPassword(),
+                        user.getRoles().stream()
+                                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                                .toList()))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
-
 }
