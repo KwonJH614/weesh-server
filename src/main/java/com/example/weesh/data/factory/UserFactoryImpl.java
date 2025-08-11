@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Objects;
 
 @Component
-public class DefaultUserFactory implements UserFactory {
+public class UserFactoryImpl implements UserFactory {
     @Override
     public User createUserFromDto(UserRequestDto requestDto, String encryptedPassword) {
         Objects.requireNonNull(requestDto, "Request DTO cannot be null");
@@ -30,6 +30,7 @@ public class DefaultUserFactory implements UserFactory {
                 .build();
     }
 
+    @Override
     public User createAdminFromDto(UserRequestDto requestDto, String encryptedPassword) {
         Objects.requireNonNull(requestDto, "Request DTO cannot be null");
         validateRequestDto(requestDto);

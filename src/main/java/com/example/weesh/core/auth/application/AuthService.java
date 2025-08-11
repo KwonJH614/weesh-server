@@ -1,17 +1,17 @@
 package com.example.weesh.core.auth.application;
 
 import com.example.weesh.core.auth.application.jwt.TokenGenerator;
-import com.example.weesh.core.auth.application.jwt.TokenResolver;
 import com.example.weesh.core.auth.application.jwt.TokenStorage;
 import com.example.weesh.core.auth.application.jwt.TokenValidator;
-import com.example.weesh.core.auth.application.useCase.AuthUseCase;
+import com.example.weesh.core.auth.application.useCase.LoginUseCase;
+import com.example.weesh.core.auth.application.useCase.ProfileUseCase;
+import com.example.weesh.core.auth.application.useCase.TokenManagementUseCase;
 import com.example.weesh.core.auth.exception.AuthErrorCode;
 import com.example.weesh.core.auth.exception.AuthException;
 import com.example.weesh.core.shared.PasswordValidator;
 import com.example.weesh.core.user.domain.User;
 import com.example.weesh.data.jwt.JwtTokenResponse;
 import com.example.weesh.web.auth.dto.AuthRequestDto;
-import com.example.weesh.web.auth.dto.LogoutResponseDto;
 import com.example.weesh.web.auth.dto.ProfileResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,13 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthService implements AuthUseCase {
+public class AuthService implements LoginUseCase, ProfileUseCase, TokenManagementUseCase {
     private final AuthRepository authRepository;
     private final TokenGenerator tokenGenerator;
     private final TokenValidator tokenValidator;
     private final TokenStorage tokenStorage;
     private final PasswordValidator passwordValidator;
+    private final AuthResponseMapper responseMapper;
 
     @Override
     public JwtTokenResponse login(AuthRequestDto dto) {
@@ -44,7 +45,7 @@ public class AuthService implements AuthUseCase {
                 .orElseThrow(() -> new AuthException(AuthErrorCode.USER_NOT_FOUND, "사용자를 찾을 수 없습니다."));
         Map<String, Object> response = new HashMap<>();
         response.put("user", new com.example.weesh.web.user.dto.UserResponseDto(user));
-        return new ProfileResponseDto(response);
+        return responseMapper.toProfileResponseDto(response);
     }
 
     @Override
@@ -59,16 +60,16 @@ public class AuthService implements AuthUseCase {
                 .orElseThrow(() -> new AuthException(AuthErrorCode.USER_NOT_FOUND, "사용자를 찾을 수 없습니다."));
         JwtTokenResponse newTokens = tokenGenerator.generateToken(username, user.getId());
         tokenStorage.invalidateRefreshToken(username);
-        tokenStorage.storeNewRefreshToken(username, newTokens.refreshToken(), 14 * 24 * 60 * 60 * 1000L); // 14일
+        tokenStorage.setRefreshToken(username, newTokens.refreshToken(), 14 * 24 * 60 * 60 * 1000L); // 14일
         return newTokens.accessToken();
     }
 
     @Override
-    public LogoutResponseDto logout(String accessToken) {
+    public void logout(String accessToken) {
         tokenValidator.validateToken(accessToken);
         String username = tokenValidator.getUsername(accessToken);
         tokenStorage.invalidateRefreshToken(username);
         tokenStorage.blacklistAccessToken(accessToken);
-        return new LogoutResponseDto("로그아웃 성공");
+        responseMapper.toLogoutResponseDto(accessToken);
     }
 }

@@ -110,7 +110,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.valueOf(ex.getStatusCode()));
     }
 
-    // JWT 라이브러리 예외들 직접 처리 (fallback)
+    // JWT 라이브러리 예외들 직접 처리
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ApiResponse<?>> handleSignatureException(
             SignatureException ex, HttpServletRequest request) {

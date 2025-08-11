@@ -65,18 +65,6 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    // 기본 오류 응답 (메시지만)
-    public static <T> ApiResponse<T> error(String message) {
-        return ApiResponse.<T>builder()
-                .success(false)
-                .message(message)
-                .data(null)
-//                .timestamp(LocalDateTime.now())
-                .status(500)
-                .error("Internal Server Error")
-                .build();
-    }
-
     // 오류 응답 (상태코드 포함)
     public static <T> ApiResponse<T> error(String message, int status) {
         return ApiResponse.<T>builder()

@@ -1,10 +1,18 @@
 package com.example.weesh.security.config;
 
 import com.example.weesh.core.auth.application.jwt.TokenResolver;
+import com.example.weesh.core.auth.application.jwt.TokenStorage;
 import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.data.redis.RedisService;
+import com.example.weesh.security.auth.AccessTokenValidationStrategy;
+import com.example.weesh.security.auth.AuthenticationContextManager;
 import com.example.weesh.security.auth.CustomUserDetailsService;
+import com.example.weesh.security.auth.RefreshTokenValidationStrategy;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -29,9 +37,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final TokenResolver tokenResolver;
     private final TokenValidator tokenValidator;
-    private final RedisService redisService;
-    private final CustomUserDetailsService userDetailsService; // 커스텀 서비스 주입
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+    private final TokenStorage tokenStorage;
+    private final CustomUserDetailsService userDetailsService;
+    private final PathValidator pathValidator;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,21 +52,41 @@ public class SecurityConfig {
     }
 
     @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return mapper;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        logger.debug("Configuring SecurityFilterChain");
+        LoggingUtil.debug("Configuring SecurityFilterChain");
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/users/register/**", "/auth/login", "/auth/reissue", "/error").permitAll()
+                        .requestMatchers(pathValidator.getPublicPaths().toArray(new String[0])).permitAll()
+                        .requestMatchers(pathValidator.getRefreshTokenAllowedPaths().toArray(new String[0])).permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(new JwtAuthenticationFilter(tokenValidator, tokenResolver, redisService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/v3/api-docs/**", "/swagger-ui/**");
+        return (web) -> web.ignoring().requestMatchers(pathValidator.getPublicPaths().toArray(new String[0]));
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(
+                pathValidator,
+                new AccessTokenValidationStrategy(tokenValidator, tokenResolver, tokenStorage, userDetailsService, new AuthenticationContextManager()),
+                new RefreshTokenValidationStrategy(tokenResolver, pathValidator, tokenValidator),
+                new AuthenticationContextManager(),
+                new ResponseHandler(objectMapper())
+        );
     }
 }
