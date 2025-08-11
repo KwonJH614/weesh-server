@@ -1,4 +1,4 @@
-package com.example.weesh.core.user.domain.exception;
+package com.example.weesh.core.user.exception;
 
 public class DuplicateUserException extends RuntimeException {
     public DuplicateUserException(String field, String value) {

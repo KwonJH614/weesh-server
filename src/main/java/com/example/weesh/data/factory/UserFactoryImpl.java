@@ -1,7 +1,6 @@
 package com.example.weesh.data.factory;
 
 import com.example.weesh.core.foundation.exception.ValidationException;
-import com.example.weesh.core.shared.ApiResponse;
 import com.example.weesh.core.user.application.factory.UserFactory;
 import com.example.weesh.core.user.domain.User;
 import com.example.weesh.core.foundation.enums.UserRole;
@@ -10,10 +9,11 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Component
-public class DefaultUserFactory implements UserFactory {
+public class UserFactoryImpl implements UserFactory {
     @Override
     public User createUserFromDto(UserRequestDto requestDto, String encryptedPassword) {
         Objects.requireNonNull(requestDto, "Request DTO cannot be null");
@@ -25,6 +25,22 @@ public class DefaultUserFactory implements UserFactory {
                 .fullName(requestDto.getFullName())
                 .studentNumber(studentNumber)
                 .roles(Collections.singleton(UserRole.USER))
+                .createdDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
+                .build();
+    }
+
+    @Override
+    public User createAdminFromDto(UserRequestDto requestDto, String encryptedPassword) {
+        Objects.requireNonNull(requestDto, "Request DTO cannot be null");
+        validateRequestDto(requestDto);
+        int studentNumber = parseStudentNumber(requestDto.getStudentNumber());
+        return User.builder()
+                .username(requestDto.getUsername())
+                .password(encryptedPassword)
+                .fullName(requestDto.getFullName())
+                .studentNumber(studentNumber)
+                .roles(new HashSet<>(Collections.singletonList(UserRole.ADMIN))) // admin 역할 설정
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();

@@ -1,48 +1,55 @@
 package com.example.weesh.security.config;
 
-import com.example.weesh.data.jwt.JwtTokenProvider;
-import com.example.weesh.data.redis.RedisService;
+import com.example.weesh.core.foundation.log.LoggingUtil;
+import com.example.weesh.security.auth.AccessTokenValidationStrategy;
+import com.example.weesh.security.auth.AuthenticationContextManager;
+import com.example.weesh.security.auth.RefreshTokenValidationStrategy;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
+@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService;
-    private final UserDetailsService userDetailsService;
+    private final PathValidator pathValidator;
+    private final AccessTokenValidationStrategy accessTokenStrategy;
+    private final RefreshTokenValidationStrategy refreshTokenStrategy;
+    private final AuthenticationContextManager authContextManager;
+    private final ResponseHandler responseHandler;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        String token = resolveToken(request);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            String username = jwtTokenProvider.getUsername(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (userDetails != null) {
-                var authentication = org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-                        .authenticated(userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }
-        chain.doFilter(request, response);
-    }
+        String requestURI = request.getRequestURI();
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith(JwtTokenProvider.BEARER + " ")) {
-            return bearerToken.substring(7);
+        try {
+            if (pathValidator.isPublicPath(requestURI)) {
+                chain.doFilter(request, response);
+                return;
+            }
+
+            List.of(refreshTokenStrategy, accessTokenStrategy)
+                    .forEach(strategy -> {
+                        try {
+                            strategy.validate(request, response);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e.getMessage(), e);
+                        }
+                    });
+
+            chain.doFilter(request, response);
+        } catch (Exception e) {
+            LoggingUtil.error("Authentication error for URI: {}, message: {}", requestURI, e.getMessage());
+            authContextManager.clearAuthentication();
+            responseHandler.sendErrorResponse(response, e.getMessage());
+            return;
         }
-        return null;
     }
 }
