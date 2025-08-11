@@ -2,14 +2,13 @@ package com.example.weesh.security.auth;
 
 import com.example.weesh.core.auth.application.jwt.TokenResolver;
 import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.security.config.PathValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RefreshTokenValidationStrategy implements TokenValidationStrategy {
@@ -26,7 +25,7 @@ public class RefreshTokenValidationStrategy implements TokenValidationStrategy {
 
         String requestURI = request.getRequestURI();
         if (!pathValidator.isRefreshTokenAllowed(requestURI)) {
-            log.warn("Refresh token misuse detected for URI: {}", requestURI);
+            LoggingUtil.warn("Refresh token misuse detected for URI: {}", requestURI);
             throw new IllegalStateException("리프레시 토큰은 이 엔드포인트에 사용할 수 없습니다: " + requestURI);
         }
         tokenValidator.validateToken(refreshToken);

@@ -3,9 +3,9 @@ package com.example.weesh.data.jwt;
 import com.example.weesh.core.auth.application.jwt.TokenValidator;
 import com.example.weesh.core.auth.exception.AuthErrorCode;
 import com.example.weesh.core.auth.exception.AuthException;
+import com.example.weesh.core.foundation.log.LoggingUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,6 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-@Slf4j
 @Component
 public class JwtTokenValidatorImpl implements TokenValidator {
     private final SecretKey key;
@@ -35,25 +34,25 @@ public class JwtTokenValidatorImpl implements TokenValidator {
             Claims claims = parseToken(token);
             validateExpiration(claims);
         } catch (SecurityException | SignatureException e) {
-            log.warn("Invalid JWT signature: {}", e.getMessage());
+            LoggingUtil.warn("Invalid JWT signature: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "잘못된 토큰 서명입니다.");
         } catch (ExpiredJwtException e) {
-            log.warn("Expired JWT token: {}", e.getMessage());
+            LoggingUtil.warn("Expired JWT token: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.EXPIRED_TOKEN, "토큰이 만료되었습니다.");
         } catch (MalformedJwtException e) {
-            log.warn("Malformed JWT token: {}", e.getMessage());
+            LoggingUtil.warn("Malformed JWT token: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "잘못된 형식의 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-            log.warn("Unsupported JWT token: {}", e.getMessage());
+            LoggingUtil.warn("Unsupported JWT token: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "지원하지 않는 토큰 형식입니다.");
         } catch (IllegalArgumentException e) {
-            log.warn("Invalid JWT token argument: {}", e.getMessage());
+            LoggingUtil.warn("Invalid JWT token argument: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.");
         } catch (JwtException e) {
-            log.warn("JWT processing error: {}", e.getMessage());
+            LoggingUtil.warn("JWT processing error: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "토큰 처리 중 오류가 발생했습니다.");
         } catch (Exception e) {
-            log.error("Unexpected error during token validation: {}", e.getMessage(), e);
+            LoggingUtil.error("Unexpected error during token validation: {}", e.getMessage(), String.valueOf(e));
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "토큰 검증 중 예상치 못한 오류가 발생했습니다.");
         }
     }
@@ -63,7 +62,7 @@ public class JwtTokenValidatorImpl implements TokenValidator {
         try {
             return parseToken(token).getSubject();
         } catch (Exception e) {
-            log.error("Failed to extract username from token: {}", e.getMessage());
+            LoggingUtil.error("Failed to extract username from token: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "토큰에서 사용자 정보를 추출할 수 없습니다.");
         }
     }
@@ -74,7 +73,7 @@ public class JwtTokenValidatorImpl implements TokenValidator {
         try {
             return parseToken(token).get("type", String.class);
         } catch (Exception e) {
-            log.error("Failed to extract token type: {}", e.getMessage());
+            LoggingUtil.error("Failed to extract token type: {}", e.getMessage());
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "토큰 타입을 확인할 수 없습니다.");
         }
     }

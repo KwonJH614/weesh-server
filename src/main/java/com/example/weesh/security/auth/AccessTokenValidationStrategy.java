@@ -3,14 +3,13 @@ package com.example.weesh.security.auth;
 import com.example.weesh.core.auth.application.jwt.TokenResolver;
 import com.example.weesh.core.auth.application.jwt.TokenStorage;
 import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.foundation.log.LoggingUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AccessTokenValidationStrategy implements TokenValidationStrategy {
@@ -29,7 +28,7 @@ public class AccessTokenValidationStrategy implements TokenValidationStrategy {
 
         // 블랙리스트 확인
         if (tokenStorage.isTokenBlacklisted(token)) {
-            log.warn("Blacklisted token detected: {}", token.substring(0, Math.min(10, token.length())));
+            LoggingUtil.warn("Blacklisted token detected: {}", token.substring(0, Math.min(10, token.length())));
             throw new IllegalStateException("블랙리스트에 등록된 토큰입니다.");
         }
 

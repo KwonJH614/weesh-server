@@ -1,5 +1,6 @@
 package com.example.weesh.web.user;
 
+import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.core.shared.ApiResponse;
 import com.example.weesh.core.user.application.UserService;
 import com.example.weesh.core.user.application.useCase.RegisterUserUseCase;
@@ -22,6 +23,7 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Object>> registerUser(@Valid @RequestBody UserRequestDto userRequestDto) {
         UserResponseDto response = registerUserUseCase.register(userRequestDto);
+        LoggingUtil.info("User {} registered successfully", userRequestDto.getUsername());
         return ResponseEntity
                 .ok(ApiResponse
                         .success("회원가입 성공",response)
@@ -31,6 +33,7 @@ public class UserController {
     @PostMapping("/register/admin")
     public ResponseEntity<ApiResponse<Object>> registerAdmin(@Valid @RequestBody UserRequestDto userRequestDto) {
         UserResponseDto response = registerUserUseCase.registerAdmin(userRequestDto);
+        LoggingUtil.info("Admin {} registered successfully", userRequestDto.getUsername());
         return ResponseEntity
                 .ok(ApiResponse
                         .success("관리자 등록 성공", response));

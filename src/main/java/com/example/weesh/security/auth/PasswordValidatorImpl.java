@@ -1,6 +1,5 @@
 package com.example.weesh.security.auth;
 
-import com.example.weesh.core.auth.exception.AuthErrorCode;
 import com.example.weesh.core.auth.exception.AuthException;
 import com.example.weesh.core.shared.PasswordValidator;
 import lombok.RequiredArgsConstructor;

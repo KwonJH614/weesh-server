@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ApiResponse<?>> handleDuplicateUserException(
             DuplicateUserException ex, HttpServletRequest request) {
-        LoggingUtil.error("Handling duplicate user exception: " + ex.getMessage(), ex);
+        LoggingUtil.error("Handling duplicate user exception: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 ex.getMessage(),
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiResponse<?>> handleValidationException(
             ValidationException ex, HttpServletRequest request) {
-        LoggingUtil.error("Validation error: " + ex.getMessage(), ex);
+        LoggingUtil.error("Validation error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 "입력값이 올바르지 않습니다: " + ex.getMessage(),
@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
                 .findFirst()
                 .orElse("입력값이 올바르지 않습니다.");
 
-        LoggingUtil.error("Validation error: " + errorMessage, ex);
+        LoggingUtil.error("Validation error: " + errorMessage, String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 errorMessage,
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ApiResponse<?>> handleResponseStatusException(
             ResponseStatusException ex, HttpServletRequest request) {
-        LoggingUtil.error("Response status error: " + ex.getReason(), ex);
+        LoggingUtil.error("Response status error: " + ex.getReason(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 ex.getReason(),
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiResponse<?>> handleBlacklistException(
             IllegalStateException ex, HttpServletRequest request) {
-        LoggingUtil.error("IllegalStateException error: " + ex.getMessage(), ex);
+        LoggingUtil.error("IllegalStateException error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 ex.getMessage(),
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ApiResponse<?>> handleAuthException(
             AuthException ex, HttpServletRequest request) {
-        LoggingUtil.error("Auth error: " + ex.getMessage(), ex);
+        LoggingUtil.error("Auth error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 ex.getMessage(),
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<ApiResponse<?>> handleSignatureException(
             SignatureException ex, HttpServletRequest request) {
-        LoggingUtil.error("JWT signature error: " + ex.getMessage(), ex);
+        LoggingUtil.error("JWT signature error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 "잘못된 토큰입니다.",
@@ -128,7 +128,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ApiResponse<?>> handleExpiredJwtException(
             ExpiredJwtException ex, HttpServletRequest request) {
-        LoggingUtil.error("JWT expired error: " + ex.getMessage(), ex);
+        LoggingUtil.error("JWT expired error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 "토큰이 만료되었습니다. 다시 로그인해주세요.",
@@ -142,7 +142,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<ApiResponse<?>> handleMalformedJwtException(
             MalformedJwtException ex, HttpServletRequest request) {
-        LoggingUtil.error("JWT malformed error: " + ex.getMessage(), ex);
+        LoggingUtil.error("JWT malformed error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 "잘못된 형식의 토큰입니다.",
@@ -156,7 +156,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnsupportedJwtException.class)
     public ResponseEntity<ApiResponse<?>> handleUnsupportedJwtException(
             UnsupportedJwtException ex, HttpServletRequest request) {
-        LoggingUtil.error("JWT unsupported error: " + ex.getMessage(), ex);
+        LoggingUtil.error("JWT unsupported error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 "지원하지 않는 토큰 형식입니다.",
@@ -170,7 +170,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ApiResponse<?>> handleJwtException(
             JwtException ex, HttpServletRequest request) {
-        LoggingUtil.error("JWT processing error: " + ex.getMessage(), ex);
+        LoggingUtil.error("JWT processing error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 "토큰 처리 중 오류가 발생했습니다.",
@@ -184,7 +184,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(
             Exception ex, HttpServletRequest request) {
-        LoggingUtil.error("Internal server error: " + ex.getMessage(), ex);
+        LoggingUtil.error("Internal server error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(
                 "서버 내부 오류가 발생했습니다.",

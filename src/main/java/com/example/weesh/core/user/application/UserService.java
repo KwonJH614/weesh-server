@@ -1,6 +1,7 @@
 package com.example.weesh.core.user.application;
 
 import com.example.weesh.core.user.application.factory.UserFactory;
+import com.example.weesh.core.user.application.mapper.UserResponseMapper;
 import com.example.weesh.core.user.application.useCase.RegisterUserUseCase;
 import com.example.weesh.core.user.domain.User;
 import com.example.weesh.core.user.exception.DuplicateUserException;
@@ -10,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

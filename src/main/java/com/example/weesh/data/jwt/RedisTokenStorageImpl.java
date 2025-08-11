@@ -6,12 +6,10 @@ import com.example.weesh.core.auth.exception.AuthException;
 import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.data.redis.RedisService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RedisTokenStorageImpl implements TokenStorage {
@@ -22,7 +20,7 @@ public class RedisTokenStorageImpl implements TokenStorage {
         try {
             return redisService.getValues(refreshTokenKey(username));
         } catch (Exception e) {
-            log.error("Failed to get refresh token for username: {}", username, e);
+            LoggingUtil.error("Failed to get refresh token for username: {}", username, String.valueOf(e));
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "리프레시 토큰 조회 실패");
         }
     }
@@ -31,9 +29,9 @@ public class RedisTokenStorageImpl implements TokenStorage {
     public void invalidateRefreshToken(String username) {
         try {
             redisService.deleteValues(refreshTokenKey(username));
-            log.info("Refresh token invalidated for username: {}", username);
+            LoggingUtil.info("Refresh token invalidated for username: {}", username);
         } catch (Exception e) {
-            log.error("Failed to invalidate refresh token for username: {}", username, e);
+            LoggingUtil.error("Failed to invalidate refresh token for username: {}", username, String.valueOf(e));
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "리프레시 토큰 무효화 실패");
         }
     }
@@ -45,10 +43,10 @@ public class RedisTokenStorageImpl implements TokenStorage {
             long ttl = calculateTokenTTL(accessToken);
             if (ttl > 0) {
                 redisService.setValues(blacklistKey(accessToken), "logout", Duration.ofMillis(ttl));
-                log.info("Access token blacklisted");
+                LoggingUtil.info("Access token blacklisted");
             }
         } catch (Exception e) {
-            log.error("Failed to blacklist access token", e);
+            LoggingUtil.error("Failed to blacklist access token", String.valueOf(e));
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "토큰 블랙리스트 등록 실패");
         }
     }
@@ -57,9 +55,9 @@ public class RedisTokenStorageImpl implements TokenStorage {
     public void setRefreshToken(String username, String refreshToken, long validityMillis) {
         try {
             redisService.setValues(refreshTokenKey(username), refreshToken, Duration.ofMillis(validityMillis));
-            LoggingUtil.infoSetVelue("Stored refresh token for username: {}", username);
+            LoggingUtil.info("Stored refresh token for username: {}", username);
         } catch (Exception e) {
-            log.error("Failed to store refresh token for username: {}", username, e);
+            LoggingUtil.error("Failed to store refresh token for username: {}", username, String.valueOf(e));
             throw new AuthException(AuthErrorCode.INVALID_TOKEN, "리프레시 토큰 저장 실패");
         }
     }
@@ -70,7 +68,7 @@ public class RedisTokenStorageImpl implements TokenStorage {
             String blacklisted = redisService.getValues(blacklistKey(token));
             return blacklisted != null;
         } catch (Exception e) {
-            log.error("Failed to check token blacklist status", e);
+            LoggingUtil.error("Failed to check token blacklist status", String.valueOf(e));
             return false; // 에러 시 false 반환하여 인증 플로우 계속 진행
         }
     }

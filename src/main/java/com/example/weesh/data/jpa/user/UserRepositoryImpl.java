@@ -2,6 +2,7 @@ package com.example.weesh.data.jpa.user;
 
 import com.example.weesh.core.user.application.UserRepository;
 import com.example.weesh.core.user.domain.User;
+import com.example.weesh.data.jpa.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

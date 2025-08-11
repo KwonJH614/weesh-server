@@ -3,6 +3,7 @@ package com.example.weesh.core.auth.application;
 import com.example.weesh.core.auth.application.jwt.TokenGenerator;
 import com.example.weesh.core.auth.application.jwt.TokenStorage;
 import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.auth.application.mapper.AuthResponseMapper;
 import com.example.weesh.core.auth.application.useCase.LoginUseCase;
 import com.example.weesh.core.auth.application.useCase.ProfileUseCase;
 import com.example.weesh.core.auth.application.useCase.TokenManagementUseCase;
@@ -14,13 +15,12 @@ import com.example.weesh.data.jwt.JwtTokenResponse;
 import com.example.weesh.web.auth.dto.AuthRequestDto;
 import com.example.weesh.web.auth.dto.ProfileResponseDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class AuthService implements LoginUseCase, ProfileUseCase, TokenManagementUseCase {

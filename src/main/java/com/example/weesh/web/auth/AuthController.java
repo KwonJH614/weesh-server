@@ -8,6 +8,7 @@ import com.example.weesh.core.auth.application.useCase.ProfileUseCase;
 import com.example.weesh.core.auth.application.useCase.TokenManagementUseCase;
 import com.example.weesh.core.auth.exception.AuthErrorCode;
 import com.example.weesh.core.auth.exception.AuthException;
+import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.core.shared.ApiResponse;
 import com.example.weesh.data.jwt.JwtTokenResponse;
 import com.example.weesh.web.auth.dto.AuthRequestDto;
@@ -18,8 +19,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +34,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<JwtTokenResponse>> loginWithValidation(@Valid @RequestBody AuthRequestDto requestLogin) {
         JwtTokenResponse response = loginUseCase.login(requestLogin);
+        LoggingUtil.info("User {} logged in successfully", requestLogin.getUsername());
         return ResponseEntity
                 .ok(ApiResponse
                         .success("로그인 성공", response));
@@ -45,6 +45,7 @@ public class AuthController {
         String accessToken = tokenResolver.resolveToken(request);
         tokenValidator.validateToken(accessToken);
         ProfileResponseDto response = profileUseCase.getProfileWithPortfolios(tokenValidator.getUsername(accessToken));
+        LoggingUtil.info("Profile retrieved for user {}", tokenValidator.getUsername(accessToken));
         return ResponseEntity
                 .ok(ApiResponse
                         .success("프로필 조회 성공", response));
@@ -68,6 +69,7 @@ public class AuthController {
                 .accessTokenExpireDate(30 * 60 * 1000L) // 30분
                 .build();
 
+        LoggingUtil.info("Access token reissued for user {}", username);
         return ResponseEntity
                 .ok(ApiResponse
                         .success("토큰 재발급 성공", response));
@@ -77,6 +79,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<LogoutResponseDto>> logout(HttpServletRequest request) {
         String accessToken = tokenResolver.resolveToken(request); // resolveToken 메서드 추가 필요
         tokenManagementUseCase.logout(accessToken);
+        String username = tokenValidator.getUsername(accessToken);
         return ResponseEntity
                 .ok(ApiResponse
                         .success("로그아웃 성공", null));

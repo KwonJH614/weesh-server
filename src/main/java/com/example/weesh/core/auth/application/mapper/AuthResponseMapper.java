@@ -1,4 +1,4 @@
-package com.example.weesh.core.auth.application;
+package com.example.weesh.core.auth.application.mapper;
 
 import com.example.weesh.web.auth.dto.LogoutResponseDto;
 import com.example.weesh.web.auth.dto.ProfileResponseDto;
