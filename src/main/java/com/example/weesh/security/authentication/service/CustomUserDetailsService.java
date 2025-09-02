@@ -1,4 +1,4 @@
-package com.example.weesh.security.auth;
+package com.example.weesh.security.authentication.service;
 
 import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.core.user.application.UserRepository;

@@ -1,4 +1,4 @@
-package com.example.weesh.security.config;
+package com.example.weesh.security.authorization.validator;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

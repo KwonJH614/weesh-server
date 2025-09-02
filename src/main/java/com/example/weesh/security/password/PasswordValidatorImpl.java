@@ -1,4 +1,4 @@
-package com.example.weesh.security.auth;
+package com.example.weesh.security.password;
 
 import com.example.weesh.core.auth.exception.AuthException;
 import com.example.weesh.core.shared.PasswordValidator;

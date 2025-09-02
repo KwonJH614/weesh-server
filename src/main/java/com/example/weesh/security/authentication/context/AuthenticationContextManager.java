@@ -1,4 +1,4 @@
-package com.example.weesh.security.auth;
+package com.example.weesh.security.authentication.context;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,6 +1,6 @@
 package com.example.weesh.data.jwt;
 
-import com.example.weesh.core.auth.application.jwt.TokenStorage;
+import com.example.weesh.core.auth.application.token.TokenStorage;
 import com.example.weesh.core.auth.exception.AuthErrorCode;
 import com.example.weesh.core.auth.exception.AuthException;
 import com.example.weesh.core.foundation.log.LoggingUtil;

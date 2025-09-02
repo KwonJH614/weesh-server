@@ -1,8 +1,8 @@
 package com.example.weesh.core.auth.application;
 
-import com.example.weesh.core.auth.application.jwt.TokenGenerator;
-import com.example.weesh.core.auth.application.jwt.TokenStorage;
-import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.auth.application.token.TokenGenerator;
+import com.example.weesh.core.auth.application.token.TokenStorage;
+import com.example.weesh.core.auth.application.token.TokenValidator;
 import com.example.weesh.core.auth.application.mapper.AuthResponseMapper;
 import com.example.weesh.core.auth.application.useCase.LoginUseCase;
 import com.example.weesh.core.auth.application.useCase.ProfileUseCase;

@@ -26,4 +26,11 @@ public class AdviceRepositoryImpl implements AdviceRepository {
     public Optional<Advice> findById(Long id) {
         return jpaRepository.findById(id).map(adviceMapper::toDomain);
     }
+
+    @Override
+    public java.util.List<Advice> findAll() {
+        return jpaRepository.findAll().stream()
+                .map(adviceMapper::toDomain)
+                .toList();
+    }
 }

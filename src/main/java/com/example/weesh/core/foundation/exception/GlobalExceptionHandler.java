@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -184,6 +185,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(
             Exception ex, HttpServletRequest request) {
+        if (ex instanceof AuthorizationDeniedException) {
+            // AuthorizationDeniedException은 CustomAccessDeniedHandler에서 처리
+            throw (AuthorizationDeniedException) ex;
+        }
         LoggingUtil.error("Internal server error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(

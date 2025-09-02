@@ -1,4 +1,4 @@
-package com.example.weesh.security.config;
+package com.example.weesh.security.config.core;
 
 import com.example.weesh.core.shared.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;

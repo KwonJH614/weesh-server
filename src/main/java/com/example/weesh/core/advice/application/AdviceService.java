@@ -2,9 +2,10 @@ package com.example.weesh.core.advice.application;
 
 import com.example.weesh.core.advice.application.factory.AdviceFactory;
 import com.example.weesh.core.advice.application.useCase.AdviceCreateUseCase;
+import com.example.weesh.core.advice.application.useCase.AdviceReadUseCase;
 import com.example.weesh.core.advice.domain.Advice;
-import com.example.weesh.core.auth.application.jwt.TokenResolver;
-import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.auth.application.token.TokenResolver;
+import com.example.weesh.core.auth.application.token.TokenValidator;
 import com.example.weesh.core.user.application.UserRepository;
 import com.example.weesh.core.user.domain.User;
 import com.example.weesh.web.advice.dto.AdviceCreateRequestDto;
@@ -14,9 +15,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class AdviceService implements AdviceCreateUseCase {
+public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase {
     private final AdviceRepository adviceRepository;
     private final AdviceFactory adviceFactory;
     private final TokenResolver tokenResolver;
@@ -32,6 +35,14 @@ public class AdviceService implements AdviceCreateUseCase {
         Advice advice = adviceFactory.createAdvice(dto, userId);
         Advice savedAdvice = adviceRepository.save(advice);
         return new AdviceResponseDto(savedAdvice);
+    }
+
+    @Override
+    public List<AdviceResponseDto> getAdvice() {
+        List<Advice> adviceList = adviceRepository.findAll();
+        return adviceList.stream()
+                .map(AdviceResponseDto::new)
+                .toList();
     }
 
     private Long getUserIdFromToken(String token) {

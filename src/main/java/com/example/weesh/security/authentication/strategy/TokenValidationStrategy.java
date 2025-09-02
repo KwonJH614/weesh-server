@@ -1,4 +1,4 @@
-package com.example.weesh.security.auth;
+package com.example.weesh.security.authentication.strategy;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

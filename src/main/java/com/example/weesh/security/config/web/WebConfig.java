@@ -1,4 +1,4 @@
-package com.example.weesh.security.config;
+package com.example.weesh.security.config.web;
 
 
 import org.springframework.context.annotation.Configuration;
