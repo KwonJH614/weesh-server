@@ -1,5 +1,8 @@
 package com.example.weesh.core.foundation.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AdviceStatus {
     PENDING("대기 중"),
     ACCEPTED("수락됨"),
@@ -11,9 +14,5 @@ public enum AdviceStatus {
 
     AdviceStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

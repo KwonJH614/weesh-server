@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -28,7 +29,7 @@ public class AdviceRepositoryImpl implements AdviceRepository {
     }
 
     @Override
-    public java.util.List<Advice> findAll() {
+    public List<Advice> findAll() {
         return jpaRepository.findAll().stream()
                 .map(adviceMapper::toDomain)
                 .toList();

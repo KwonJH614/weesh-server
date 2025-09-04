@@ -1,8 +1,7 @@
 package com.example.weesh.core.advice.application;
 
 import com.example.weesh.core.advice.application.factory.AdviceFactory;
-import com.example.weesh.core.advice.application.useCase.AdviceCreateUseCase;
-import com.example.weesh.core.advice.application.useCase.AdviceReadUseCase;
+import com.example.weesh.core.advice.application.useCase.*;
 import com.example.weesh.core.advice.domain.Advice;
 import com.example.weesh.core.auth.application.token.TokenResolver;
 import com.example.weesh.core.auth.application.token.TokenValidator;
@@ -10,16 +9,18 @@ import com.example.weesh.core.user.application.UserRepository;
 import com.example.weesh.core.user.domain.User;
 import com.example.weesh.web.advice.dto.AdviceCreateRequestDto;
 import com.example.weesh.web.advice.dto.AdviceResponseDto;
+import com.example.weesh.web.advice.dto.AdviceUpdateRequestDro;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase {
+public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase, AdviceUpdateUseCase, AdviceApproveUseCase, AdviceDeleteUseCase {
     private final AdviceRepository adviceRepository;
     private final AdviceFactory adviceFactory;
     private final TokenResolver tokenResolver;
@@ -43,6 +44,39 @@ public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase {
         return adviceList.stream()
                 .map(AdviceResponseDto::new)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public AdviceResponseDto approveAdvice(Long adviceId) {
+        Advice advice = adviceRepository.findById(adviceId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID: " + adviceId + "의 상담 예약을 찾을 수 없습니다."));
+
+        advice.approve();
+        Advice updatedAdvice = adviceRepository.save(advice);
+        return new AdviceResponseDto(updatedAdvice);
+    }
+
+    @Override
+    @Transactional
+    public AdviceResponseDto updateAdvice(Long adviceId, AdviceUpdateRequestDro dto) {
+        Advice advice = adviceRepository.findById(adviceId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID: " + adviceId + "의 상담 예약을 찾을 수 없습니다."));
+
+        advice.update(dto);
+        Advice updatedAdvice = adviceRepository.save(advice);
+        return new AdviceResponseDto(updatedAdvice);
+    }
+
+    @Override
+    @Transactional
+    public AdviceResponseDto deleteAdvice(Long adviceId) {
+        Advice advice = adviceRepository.findById(adviceId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID: " + adviceId + "의 상담 예약을 찾을 수 없습니다."));
+
+        advice.delete();
+        Advice updatedAdvice = adviceRepository.save(advice);
+        return new AdviceResponseDto(updatedAdvice);
     }
 
     private Long getUserIdFromToken(String token) {

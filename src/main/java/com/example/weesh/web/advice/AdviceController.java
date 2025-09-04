@@ -1,12 +1,12 @@
 package com.example.weesh.web.advice;
 
 import com.example.weesh.core.advice.application.AdviceService;
-import com.example.weesh.core.advice.application.useCase.AdviceCreateUseCase;
-import com.example.weesh.core.advice.application.useCase.AdviceReadUseCase;
+import com.example.weesh.core.advice.application.useCase.*;
 import com.example.weesh.core.foundation.log.LoggingUtil;
 import com.example.weesh.core.shared.ApiResponse;
 import com.example.weesh.web.advice.dto.AdviceCreateRequestDto;
 import com.example.weesh.web.advice.dto.AdviceResponseDto;
+import com.example.weesh.web.advice.dto.AdviceUpdateRequestDro;
 import com.example.weesh.web.auth.dto.AuthRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,6 +27,9 @@ import java.util.List;
 public class AdviceController {
     private final AdviceCreateUseCase adviceCreateUseCase;
     private final AdviceReadUseCase adviceReadUseCase;
+    private final AdviceApproveUseCase adviceApproveUseCase;
+    private final AdviceUpdateUseCase adviceUpdateUseCase;
+    private final AdviceDeleteUseCase adviceDeleteUseCase;
 
     @Operation(summary = "상담 예약", description = "회원/비회원 상담 예약")
     @ApiResponses({
@@ -76,5 +79,73 @@ public class AdviceController {
                         .ok(ApiResponse
                                 .success("상담 내역 조회 성공", advice)))
                 .toList();
+    }
+
+    @Operation(summary = "상담 예약 승인", description = "관리자 권한으로 상담 예약 승인")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "4xx || 5xx",
+                    description = "실패"
+            )
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<ApiResponse<AdviceResponseDto>> approveAdvice(@PathVariable Long id) {
+        AdviceResponseDto response = adviceApproveUseCase.approveAdvice(id);
+
+        LoggingUtil.info("Advice approved with ID: {}", String.valueOf(id));
+        return ResponseEntity
+                .ok(ApiResponse
+                        .success("상담 예약 승인 성공", response));
+    }
+
+    @Operation(summary = "상담 예약 수정", description = "사용자가 자신의 상담 예약 수정")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "4xx || 5xx",
+                    description = "실패"
+            )
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/update")
+    public ResponseEntity<ApiResponse<AdviceResponseDto>> updateAdvice(
+            @PathVariable Long id,
+            @Valid @RequestBody AdviceUpdateRequestDro dto) {
+        AdviceResponseDto response = adviceUpdateUseCase.updateAdvice(id, dto);
+
+        LoggingUtil.info("Advice updated with ID: {}", String.valueOf(id));
+        return ResponseEntity
+                .ok(ApiResponse
+                        .success("상담 예약 수정 성공", response));
+    }
+
+    @Operation(summary = "상담 예약 삭제", description = "사용자가 자신의 상담 예약 삭제")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "4xx || 5xx",
+                    description = "실패"
+            )
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<ApiResponse<AdviceResponseDto>> deleteAdvice(@PathVariable Long id) {
+        AdviceResponseDto response = adviceDeleteUseCase.deleteAdvice(id);
+
+        LoggingUtil.info("Advice deleted with ID: {}", String.valueOf(id));
+        return ResponseEntity
+                .ok(ApiResponse
+                        .success("상담 예약 삭제 성공", response));
     }
 }
