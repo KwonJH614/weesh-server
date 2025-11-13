@@ -1,8 +1,8 @@
 package com.example.weesh.web.auth;
 
-import com.example.weesh.core.auth.application.jwt.TokenResolver;
-import com.example.weesh.core.auth.application.jwt.TokenStorage;
-import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.auth.application.token.TokenResolver;
+import com.example.weesh.core.auth.application.token.TokenStorage;
+import com.example.weesh.core.auth.application.token.TokenValidator;
 import com.example.weesh.core.auth.application.useCase.LoginUseCase;
 import com.example.weesh.core.auth.application.useCase.ProfileUseCase;
 import com.example.weesh.core.auth.application.useCase.TokenManagementUseCase;
@@ -14,7 +14,6 @@ import com.example.weesh.data.jwt.JwtTokenResponse;
 import com.example.weesh.web.auth.dto.AuthRequestDto;
 import com.example.weesh.web.auth.dto.LogoutResponseDto;
 import com.example.weesh.web.auth.dto.ProfileResponseDto;
-import com.example.weesh.web.user.dto.UserRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;

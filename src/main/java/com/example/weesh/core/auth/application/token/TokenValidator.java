@@ -1,7 +1,10 @@
-package com.example.weesh.core.auth.application.jwt;
+package com.example.weesh.core.auth.application.token;
+
+import io.jsonwebtoken.Claims;
 
 public interface TokenValidator {
     void validateToken(String token);
     String getUsername(String token);
     String getTokenType(String token);
+    Claims parseToken(String token);
 }

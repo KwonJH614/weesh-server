@@ -1,7 +1,7 @@
 package com.example.weesh.data.jwt;
 
-import com.example.weesh.core.auth.application.jwt.TokenGenerator;
-import com.example.weesh.core.auth.application.jwt.TokenStorage;
+import com.example.weesh.core.auth.application.token.TokenGenerator;
+import com.example.weesh.core.auth.application.token.TokenStorage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

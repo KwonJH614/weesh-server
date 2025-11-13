@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -89,11 +90,25 @@ public class GlobalExceptionHandler {
 
         ApiResponse<?> response = ApiResponse.error(
                 ex.getMessage(),
-                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 request.getRequestURI()
         );
 
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgumentException(
+            IllegalArgumentException ex, HttpServletRequest request) {
+        LoggingUtil.error("Illegal argument error: " + ex.getMessage(), String.valueOf(ex));
+
+        ApiResponse<?> response = ApiResponse.error(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AuthException.class)
@@ -184,6 +199,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleGenericException(
             Exception ex, HttpServletRequest request) {
+        if (ex instanceof AuthorizationDeniedException) {
+            // AuthorizationDeniedException은 CustomAccessDeniedHandler에서 처리
+            throw (AuthorizationDeniedException) ex;
+        }
         LoggingUtil.error("Internal server error: " + ex.getMessage(), String.valueOf(ex));
 
         ApiResponse<?> response = ApiResponse.error(

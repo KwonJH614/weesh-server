@@ -1,4 +1,4 @@
-package com.example.weesh.core.auth.application.jwt;
+package com.example.weesh.core.auth.application.token;
 
 public interface TokenStorage {
     String getStoredRefreshToken(String username);

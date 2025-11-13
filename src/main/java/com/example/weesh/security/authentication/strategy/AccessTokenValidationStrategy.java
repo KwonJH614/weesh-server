@@ -1,9 +1,11 @@
-package com.example.weesh.security.auth;
+package com.example.weesh.security.authentication.strategy;
 
-import com.example.weesh.core.auth.application.jwt.TokenResolver;
-import com.example.weesh.core.auth.application.jwt.TokenStorage;
-import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.auth.application.token.TokenResolver;
+import com.example.weesh.core.auth.application.token.TokenStorage;
+import com.example.weesh.core.auth.application.token.TokenValidator;
 import com.example.weesh.core.foundation.log.LoggingUtil;
+import com.example.weesh.security.authentication.context.AuthenticationContextManager;
+import com.example.weesh.security.authentication.service.CustomUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

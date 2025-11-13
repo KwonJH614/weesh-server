@@ -1,7 +1,7 @@
 package com.example.weesh.data.jwt;
 
-import com.example.weesh.core.auth.application.jwt.TokenResolver;
-import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.auth.application.token.TokenResolver;
+import com.example.weesh.core.auth.application.token.TokenValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

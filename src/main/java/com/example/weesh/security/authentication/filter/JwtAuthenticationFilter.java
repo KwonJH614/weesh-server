@@ -1,9 +1,11 @@
-package com.example.weesh.security.config;
+package com.example.weesh.security.authentication.filter;
 
 import com.example.weesh.core.foundation.log.LoggingUtil;
-import com.example.weesh.security.auth.AccessTokenValidationStrategy;
-import com.example.weesh.security.auth.AuthenticationContextManager;
-import com.example.weesh.security.auth.RefreshTokenValidationStrategy;
+import com.example.weesh.security.authentication.strategy.AccessTokenValidationStrategy;
+import com.example.weesh.security.authentication.context.AuthenticationContextManager;
+import com.example.weesh.security.authentication.strategy.RefreshTokenValidationStrategy;
+import com.example.weesh.security.authorization.validator.PathValidator;
+import com.example.weesh.security.config.core.ResponseHandler;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             if (pathValidator.isPublicPath(requestURI)) {
+                if (requestURI.startsWith("/advice")) {
+                    accessTokenStrategy.validate(request, response);
+                    refreshTokenStrategy.validate(request, response);
+                }
                 chain.doFilter(request, response);
                 return;
             }

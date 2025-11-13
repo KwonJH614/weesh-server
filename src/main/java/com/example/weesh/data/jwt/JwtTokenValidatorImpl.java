@@ -1,6 +1,6 @@
 package com.example.weesh.data.jwt;
 
-import com.example.weesh.core.auth.application.jwt.TokenValidator;
+import com.example.weesh.core.auth.application.token.TokenValidator;
 import com.example.weesh.core.auth.exception.AuthErrorCode;
 import com.example.weesh.core.auth.exception.AuthException;
 import com.example.weesh.core.foundation.log.LoggingUtil;
@@ -78,7 +78,8 @@ public class JwtTokenValidatorImpl implements TokenValidator {
         }
     }
 
-    private Claims parseToken(String token) {
+    @Override
+    public Claims parseToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
