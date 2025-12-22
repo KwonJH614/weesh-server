@@ -7,6 +7,7 @@ import com.example.weesh.core.auth.application.token.TokenResolver;
 import com.example.weesh.core.auth.application.token.TokenValidator;
 import com.example.weesh.core.user.application.UserRepository;
 import com.example.weesh.core.user.domain.User;
+import com.example.weesh.core.user.exception.DuplicateUserException;
 import com.example.weesh.web.advice.dto.AdviceCreateRequestDto;
 import com.example.weesh.web.advice.dto.AdviceResponseDto;
 import com.example.weesh.web.advice.dto.AdviceUpdateRequestDro;
@@ -33,6 +34,7 @@ public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase, Ad
         String token = tokenResolver.resolveToken(request); // 요청에서 토큰 추출
         Long userId = token != null ? getUserIdFromToken(token) : null;
         validateAdviceRequest(dto, userId);
+        validateDuplicateAdvice(dto);
         Advice advice = adviceFactory.createAdvice(dto, userId);
         Advice savedAdvice = adviceRepository.save(advice);
         return new AdviceResponseDto(savedAdvice);
@@ -104,6 +106,12 @@ public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase, Ad
             if (dto.getStudentNumber() == null || dto.getFullName() == null) {
                 throw new IllegalStateException("비로그인 시 학번과 이름은 필수입니다.");
             }
+        }
+    }
+
+    private void validateDuplicateAdvice(AdviceCreateRequestDto dto) {
+        if (adviceRepository.existsByDateAndTime(dto.getDesiredDate(), dto.getDesiredTime())) {
+            throw new DuplicateUserException("이미 예약된 시간입니다. : ", dto.getDesiredDate() + "." + dto.getDesiredTime());
         }
     }
 }
