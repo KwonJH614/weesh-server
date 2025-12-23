@@ -2,11 +2,8 @@ package com.example.weesh.data.jpa.advice.mapper;
 
 import com.example.weesh.core.advice.domain.Advice;
 import com.example.weesh.core.foundation.enums.AdviceStatus;
-import com.example.weesh.core.user.application.UserRepository;
-import com.example.weesh.core.user.domain.User;
 import com.example.weesh.data.jpa.advice.AdviceEntity;
 import com.example.weesh.data.jpa.user.UserEntity;
-import com.example.weesh.data.jpa.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +12,6 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class AdviceMapper {
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     public Advice toDomain(AdviceEntity entity) {
         if (entity == null) return null;

@@ -3,7 +3,6 @@ package com.example.weesh.data.jpa.advice;
 import com.example.weesh.core.advice.application.AdviceRepository;
 import com.example.weesh.core.advice.domain.Advice;
 import com.example.weesh.core.foundation.enums.AdviceStatus;
-import com.example.weesh.core.user.domain.User;
 import com.example.weesh.data.jpa.advice.mapper.AdviceMapper;
 import com.example.weesh.data.jpa.user.JpaUserRepositoryImpl;
 import com.example.weesh.data.jpa.user.UserEntity;
