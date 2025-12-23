@@ -34,18 +34,14 @@ public class AdviceMapper {
                 .build();
     }
 
-    public AdviceEntity toEntity(Advice advice) {
+    public AdviceEntity toEntity(Advice advice, UserEntity user) {
         if (advice == null) return null;
         AdviceEntity entity = new AdviceEntity();
         entity.setId(advice.getId());
         entity.setDesiredDate(advice.getDesiredDate());
         entity.setDesiredTime(advice.getDesiredTime());
         entity.setContent(advice.getContent());
-        if (advice.getUserId() != null) {
-            User user = userRepository.findById(advice.getUserId());
-            UserEntity userEntity = userMapper.toEntity(user);
-            entity.setUser(userEntity);
-        }
+        entity.setUser(user);
         entity.setStudentNumber(advice.getStudentNumber());
         entity.setFullName(advice.getFullName());
         entity.setStatus(advice.getStatus() != null ? advice.getStatus() : AdviceStatus.PENDING);
