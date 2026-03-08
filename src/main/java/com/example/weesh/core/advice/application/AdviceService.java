@@ -95,12 +95,12 @@ public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase, Ad
     // TODO: 상담 불가 날짜 추가 및 예약 차단
 
     private Long getUserIdFromToken(String token) {
-        try {
-            tokenValidator.validateToken(token); // 토큰 유효성 검증
-            return tokenValidator.parseToken(token).get("userId", Long.class); // userId 추출
-        } catch (Exception e) {
-            throw new IllegalArgumentException("유효한 사용자 ID를 토큰에서 추출할 수 없습니다.", e);
+        tokenValidator.validateToken(token);
+        Long userId = tokenValidator.parseToken(token).get("userId", Long.class); // userId 추출
+        if (userId == null) {
+            throw new UnauthorizedUserException("유효한 사용자 Id를 토큰에서 추출할 수 없습니다.");
         }
+        return userId;
     }
 
     private void validateDuplicateAdvice(AdviceCreateRequestDto dto) {
