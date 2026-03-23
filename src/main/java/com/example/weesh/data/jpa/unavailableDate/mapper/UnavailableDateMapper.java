@@ -12,6 +12,7 @@ public class UnavailableDateMapper {
         return UnavailableDate.builder()
                 .id(entity.getId())
                 .date(entity.getDate())
+                .time(entity.getTime())
                 .reason(entity.getReason())
                 .createdDate(entity.getCreatedDate())
                 .lastModifiedDate(entity.getLastModifiedDate())
@@ -23,6 +24,7 @@ public class UnavailableDateMapper {
         UnavailableDateEntity entity = new UnavailableDateEntity();
         entity.setId(domain.getId());
         entity.setDate(domain.getDate());
+        entity.setTime(domain.getTime());
         entity.setReason(domain.getReason());
         return entity;
     }

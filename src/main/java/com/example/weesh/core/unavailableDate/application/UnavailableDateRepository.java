@@ -9,6 +9,6 @@ public interface UnavailableDateRepository {
     UnavailableDate save(UnavailableDate unavailableDate);
     Optional<UnavailableDate> findById(Long id);
     List<UnavailableDate> findAll();
-    boolean existsByDate(String date);
+    boolean existsByDateAndTime(String date, String time);
     void deleteById(Long id);
 }

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class UnavailableDateResponseDto {
     private final Long id;
     private final String date;
+    private final String time;
     private final String reason;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastModifiedDate;
@@ -16,6 +17,7 @@ public class UnavailableDateResponseDto {
     public UnavailableDateResponseDto(UnavailableDate unavailableDate) {
         this.id = unavailableDate.getId();
         this.date = unavailableDate.getDate();
+        this.time = unavailableDate.getTime();
         this.reason = unavailableDate.getReason();
         this.createdDate = unavailableDate.getCreatedDate();
         this.lastModifiedDate = unavailableDate.getLastModifiedDate();

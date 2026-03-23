@@ -12,5 +12,8 @@ public class UnavailableDateCreateRequestDto {
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "올바른 날짜 형식이 아닙니다. 예시: '20XX-XX-XX'")
     private String date;
 
+    @NotNull(message = "시간은 필수입니다.")
+    private String time;
+
     private String reason;
 }

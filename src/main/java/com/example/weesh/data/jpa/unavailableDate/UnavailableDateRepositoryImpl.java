@@ -35,8 +35,8 @@ public class UnavailableDateRepositoryImpl implements UnavailableDateRepository 
     }
 
     @Override
-    public boolean existsByDate(String date) {
-        return jpaRepository.existsByDate(date);
+    public boolean existsByDateAndTime(String date, String time) {
+        return jpaRepository.existsByDateAndTime(date, time);
     }
 
     @Override

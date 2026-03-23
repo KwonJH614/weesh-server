@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 public interface JpaUnavailableDateRepository extends JpaRepository<UnavailableDateEntity, Long> {
-    boolean existsByDate(String date);
+    boolean existsByDateAndTime(String date, String time);
 }

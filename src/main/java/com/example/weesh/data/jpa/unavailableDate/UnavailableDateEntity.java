@@ -9,13 +9,17 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity(name = "UnavailableDate")
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"date", "time"}))
 public class UnavailableDateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "date", nullable = false, unique = true)
+    @Column(name = "date", nullable = false)
     private String date;
+
+    @Column(name = "time", nullable = false)
+    private String time;
 
     @Column(name = "reason")
     private String reason;

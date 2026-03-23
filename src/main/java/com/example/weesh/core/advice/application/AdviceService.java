@@ -47,7 +47,7 @@ public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase, Ad
             throw new UserNotFoundException("존재하지 않는 유저입니다.");
         }
 
-        validateUnavailableDate(dto.getDesiredDate());
+        validateUnavailableDate(dto.getDesiredDate(), dto.getDesiredTime());
         validateDuplicateAdvice(dto);
         Advice advice = adviceFactory.createAdvice(dto, userId, user.getStudentNumber(), user.getFullName());
         Advice savedAdvice = adviceRepository.save(advice, user);
@@ -95,9 +95,9 @@ public class AdviceService implements AdviceCreateUseCase, AdviceReadUseCase, Ad
         return new AdviceResponseDto(updatedAdvice);
     }
 
-    private void validateUnavailableDate(String desiredDate) {
-        if (unavailableDateRepository.existsByDate(desiredDate)) {
-            throw new IllegalArgumentException("해당 날짜는 상담이 불가능한 날짜입니다: " + desiredDate);
+    private void validateUnavailableDate(String desiredDate, String desiredTime) {
+        if (unavailableDateRepository.existsByDateAndTime(desiredDate, desiredTime)) {
+            throw new IllegalArgumentException("해당 시간은 상담이 불가능합니다: " + desiredDate + " " + desiredTime);
         }
     }
 

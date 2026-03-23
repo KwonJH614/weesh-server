@@ -18,20 +18,21 @@ public class UnavailableDateService implements UnavailableDateCreateUseCase, Una
 
     @Override
     @Transactional
-    public UnavailableDate createUnavailableDate(String date, String reason) {
-        if (unavailableDateRepository.existsByDate(date)) {
-            throw new IllegalArgumentException("이미 등록된 상담 불가 날짜입니다: " + date);
+    public UnavailableDate createUnavailableDate(String date, String time, String reason) {
+        if (unavailableDateRepository.existsByDateAndTime(date, time)) {
+            throw new IllegalArgumentException("이미 등록된 상담 불가 시간입니다: " + date + " " + time);
         }
 
         UnavailableDate unavailableDate = UnavailableDate.builder()
                 .date(date)
+                .time(time)
                 .reason(reason)
                 .build();
 
         try {
             return unavailableDateRepository.save(unavailableDate);
         } catch (DataIntegrityViolationException e) {
-            throw new IllegalArgumentException("이미 등록된 상담 불가 날짜입니다: " + date);
+            throw new IllegalArgumentException("이미 등록된 상담 불가 시간입니다: " + date + " " + time);
         }
     }
 
