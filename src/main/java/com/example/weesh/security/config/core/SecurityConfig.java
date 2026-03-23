@@ -65,7 +65,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(pathValidator.getPublicPaths().toArray(new String[0])).permitAll()
                         .requestMatchers(pathValidator.getRefreshTokenAllowedPaths().toArray(new String[0])).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/unavailable-dates").permitAll()
+                        .requestMatchers(HttpMethod.GET, pathValidator.getPublicGetOnlyPaths().toArray(new String[0])).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler))

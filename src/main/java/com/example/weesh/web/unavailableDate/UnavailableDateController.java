@@ -31,7 +31,8 @@ public class UnavailableDateController {
     @Operation(summary = "상담 불가 날짜 등록", description = "관리자가 상담 불가 날짜를 등록합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "4xx || 5xx", description = "실패")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "4XX", description = "클라이언트 오류"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "5XX", description = "서버 오류")
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -59,7 +60,8 @@ public class UnavailableDateController {
     @Operation(summary = "상담 불가 날짜 삭제", description = "관리자가 상담 불가 날짜를 삭제합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "4xx || 5xx", description = "실패")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "4XX", description = "클라이언트 오류"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "5XX", description = "서버 오류")
     })
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")

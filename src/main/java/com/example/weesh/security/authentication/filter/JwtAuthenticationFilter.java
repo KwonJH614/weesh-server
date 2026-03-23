@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            if ("GET".equalsIgnoreCase(request.getMethod()) && requestURI.equals("/unavailable-dates")) {
+            if ("GET".equalsIgnoreCase(request.getMethod()) && pathValidator.isPublicGetOnlyPath(requestURI)) {
                 chain.doFilter(request, response);
                 return;
             }
