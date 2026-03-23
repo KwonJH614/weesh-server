@@ -8,6 +8,7 @@ import com.example.weesh.web.unavailableDate.dto.UnavailableDateCreateRequestDto
 import com.example.weesh.web.unavailableDate.dto.UnavailableDateResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,8 +33,12 @@ public class UnavailableDateService implements UnavailableDateCreateUseCase, Una
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
 
-        UnavailableDate saved = unavailableDateRepository.save(unavailableDate);
-        return new UnavailableDateResponseDto(saved);
+        try {
+            UnavailableDate saved = unavailableDateRepository.save(unavailableDate);
+            return new UnavailableDateResponseDto(saved);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException("이미 등록된 상담 불가 날짜입니다: " + dto.getDate());
+        }
     }
 
     @Override
